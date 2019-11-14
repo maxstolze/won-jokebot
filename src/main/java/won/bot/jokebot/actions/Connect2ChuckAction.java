@@ -52,8 +52,7 @@ public class Connect2ChuckAction extends BaseEventBotAction {
                                         if (connectionMessageCommandResultEvent.isSuccess()) {
                                             String jokeUrl = botContextWrapper.getJokeURLForURI(yourAtomUri);
                                             String respondWith = jokeUrl != null
-                                                            ? "You wanna find me?\n Are you Chuck Norris enough to follow me? "
-                                                                            + jokeUrl
+                                                            ? "You want more jokes?"
                                                             : "The Cuck is gone! There are way more important things than telling you about him... Deal with it";
                                             Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
                                             ctx.getEventBus().publish(

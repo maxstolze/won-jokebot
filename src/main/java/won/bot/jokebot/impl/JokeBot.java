@@ -60,23 +60,23 @@ public class JokeBot extends EventBot {
             bus.subscribe(CreateAtomFromJokeEvent.class, new ActionOnEventListener(ctx, "CreateAtomFromJobEvent",
                             new CreateAtomFromJokeAction(ctx)));
             // Create the atoms
-            BotTrigger createHokifyJobBotTrigger = new BotTrigger(ctx, Duration.ofMinutes(publishTime));
-            createHokifyJobBotTrigger.activate();
+            BotTrigger createJokeBotTrigger = new BotTrigger(ctx, Duration.ofMinutes(publishTime));
+            createJokeBotTrigger.activate();
             bus.subscribe(StartJokeFetchEvent.class, new ActionOnFirstEventListener(ctx,
-                            new PublishEventAction(ctx, new StartBotTriggerCommandEvent(createHokifyJobBotTrigger))));
-            bus.subscribe(BotTriggerEvent.class, new ActionOnTriggerEventListener(ctx, createHokifyJobBotTrigger,
+                            new PublishEventAction(ctx, new StartBotTriggerCommandEvent(createJokeBotTrigger))));
+            bus.subscribe(BotTriggerEvent.class, new ActionOnTriggerEventListener(ctx, createJokeBotTrigger,
                             new BaseEventBotAction(ctx) {
                                 @Override
                                 protected void doRun(Event event, EventListener executingListener) throws Exception {
                                     bus.publish(new CreateAtomFromJokeEvent(chuckNorrisJoke, jokeBotsApi));
                                 }
                             }));
-            // Get Hokify data
-            BotTrigger fetchHokifyJobDataTrigger = new BotTrigger(ctx, Duration.ofMinutes(updateTime));
-            fetchHokifyJobDataTrigger.activate();
+            // Get Joke data
+            BotTrigger fetchJokeDataTrigger = new BotTrigger(ctx, Duration.ofMinutes(updateTime));
+            fetchJokeDataTrigger.activate();
             bus.subscribe(FetchJokeDataEvent.class, new ActionOnFirstEventListener(ctx,
-                            new PublishEventAction(ctx, new StartBotTriggerCommandEvent(fetchHokifyJobDataTrigger))));
-            bus.subscribe(BotTriggerEvent.class, new ActionOnTriggerEventListener(ctx, fetchHokifyJobDataTrigger,
+                            new PublishEventAction(ctx, new StartBotTriggerCommandEvent(fetchJokeDataTrigger))));
+            bus.subscribe(BotTriggerEvent.class, new ActionOnTriggerEventListener(ctx, fetchJokeDataTrigger,
                             new BaseEventBotAction(ctx) {
                                 @Override
                                 protected void doRun(Event event, EventListener executingListener) throws Exception {
@@ -87,7 +87,8 @@ public class JokeBot extends EventBot {
             bus.subscribe(ConnectFromOtherAtomEvent.class,
                             new ActionOnEventListener(ctx, "ConnectReceived", new Connect2ChuckAction(ctx)));
             bus.subscribe(MessageFromOtherAtomEvent.class,
-                            new ActionOnEventListener(ctx, "ReceivedTextMessage", new Message2ChuckNorrisAction(ctx)));
+                            new ActionOnEventListener(ctx, "ReceivedTextMessage",
+                                            new Message2ChuckNorrisAction(ctx, jokeBotsApi)));
             bus.publish(new StartJokeFetchEvent());
             bus.publish(new FetchJokeDataEvent());
         } catch (Exception e) {
