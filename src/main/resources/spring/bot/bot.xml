@@ -19,16 +19,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="hokifyJobBot" class="won.bot.jobbot.impl.JobBot">
+    <bean id="jokeBot" class="won.bot.jokebot.impl.JokeBot">
         <property name="taskScheduler" ref="taskScheduler"/>
         <property name="botContextWrapper" ref="botContextWrapper"/>
         <!--property name="token" value="${hokifyjobbot.token}"/-->
         <property name="botName" value="${bot.name}"/>
-        <property name="jsonURL" value="${hokifyjobbot.jsonURL}"/>
-        <property name="geoURL" value="${hokifyjobbot.geoURL}"/>
-        <property name ="updateTime" value="${hokifyjobbot.updateTime}"/>
-        <property name ="publishTime" value ="${hokifyjobbot.publishTime}"/>
-        <property name ="createAllInOne" value ="${hokifyjobbot.createAllInOne}"/>
+        <property name="jsonURL" value="${jokebot.jsonURL}"/>
+        <property name ="updateTime" value="${jokebot.updateTime}"/>
+        <property name ="publishTime" value ="${jokebot.publishTime}"/>
         <property name="atomProducer">
             <bean class="won.bot.framework.component.atomproducer.impl.NopAtomProducer" />
         </property>
@@ -41,7 +39,7 @@
             </bean>
         </property>
     </bean>
-    <bean id="botContextWrapper" class="won.bot.jobbot.context.JobBotContextWrapper">
+    <bean id="botContextWrapper" class="won.bot.jokebot.context.JokeBotContextWrapper">
         <constructor-arg name="botContext" ref="${botContext.impl}"/>
         <constructor-arg name="botName" value="${bot.name}"/>
     </bean>

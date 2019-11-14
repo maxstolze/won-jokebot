@@ -8,9 +8,9 @@
  * KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package won.bot.jobbot.event;
+package won.bot.jokebot.event;
 
 import won.bot.framework.eventbot.event.BaseEvent;
 
-public class StartHokifyFetchEvent extends BaseEvent {
+public class StartJokeFetchEvent extends BaseEvent {
 }

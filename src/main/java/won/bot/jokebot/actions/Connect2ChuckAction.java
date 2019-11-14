@@ -1,8 +1,12 @@
-package won.bot.jobbot.actions;
+package won.bot.jokebot.actions;
+
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
 
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.Event;
@@ -13,20 +17,17 @@ import won.bot.framework.eventbot.event.impl.wonmessage.ConnectFromOtherAtomEven
 import won.bot.framework.eventbot.filter.impl.CommandResultFilter;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.bot.framework.eventbot.listener.impl.ActionOnFirstEventListener;
-import won.bot.jobbot.context.JobBotContextWrapper;
+import won.bot.jokebot.context.JokeBotContextWrapper;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 
-import java.lang.invoke.MethodHandles;
-import java.net.URI;
-
 /**
- * Created by ms on 24.09.2018.
+ * Created by ms on 14.11.2019.
  */
-public class Connect2HokifyAction extends BaseEventBotAction {
+public class Connect2ChuckAction extends BaseEventBotAction {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public Connect2HokifyAction(EventListenerContext ctx) {
+    public Connect2ChuckAction(EventListenerContext ctx) {
         super(ctx);
     }
 
@@ -35,12 +36,12 @@ public class Connect2HokifyAction extends BaseEventBotAction {
         logger.info("ConnectionEvent received");
         EventListenerContext ctx = getEventListenerContext();
         if (event instanceof ConnectFromOtherAtomEvent
-                        && ctx.getBotContextWrapper() instanceof JobBotContextWrapper) {
-            JobBotContextWrapper botContextWrapper = (JobBotContextWrapper) ctx.getBotContextWrapper();
+                        && ctx.getBotContextWrapper() instanceof JokeBotContextWrapper) {
+            JokeBotContextWrapper botContextWrapper = (JokeBotContextWrapper) ctx.getBotContextWrapper();
             Connection con = ((ConnectFromOtherAtomEvent) event).getCon();
             URI yourAtomUri = con.getAtomURI();
             try {
-                String message = "Hello!\n I found this job offer on " + "https://hokify.at";
+                String message = "Not funny enough?\n Chuck Norris will find you!";
                 final OpenCommandEvent openCommandEvent = new OpenCommandEvent(con, message);
                 ctx.getEventBus().subscribe(OpenCommandResultEvent.class, new ActionOnFirstEventListener(ctx,
                                 new CommandResultFilter(openCommandEvent), new BaseEventBotAction(ctx) {
@@ -49,16 +50,16 @@ public class Connect2HokifyAction extends BaseEventBotAction {
                                                     throws Exception {
                                         OpenCommandResultEvent connectionMessageCommandResultEvent = (OpenCommandResultEvent) event;
                                         if (connectionMessageCommandResultEvent.isSuccess()) {
-                                            String jobUrl = botContextWrapper.getJobURLForURI(yourAtomUri);
-                                            String respondWith = jobUrl != null
-                                                            ? "You need more information?\n Just follow this link: "
-                                                                            + jobUrl
-                                                            : "The job is no longer available, sorry!";
+                                            String jokeUrl = botContextWrapper.getJokeURLForURI(yourAtomUri);
+                                            String respondWith = jokeUrl != null
+                                                            ? "You wanna find me?\n Are you Chuck Norris enough to follow me? "
+                                                                            + jokeUrl
+                                                            : "The Cuck is gone! There are way more important things than telling you about him... Deal with it";
                                             Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
                                             ctx.getEventBus().publish(
                                                             new ConnectionMessageCommandEvent(con, messageModel));
                                         } else {
-                                            logger.error("FAILURERESPONSEEVENT FOR JOB PAYLOAD");
+                                            logger.error("FAILURERESPONSEEVENT FOR JOKE PAYLOAD");
                                         }
                                     }
                                 }));
