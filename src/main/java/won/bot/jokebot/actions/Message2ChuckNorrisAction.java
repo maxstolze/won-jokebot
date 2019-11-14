@@ -1,6 +1,7 @@
 package won.bot.jokebot.actions;
 
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
@@ -17,6 +18,7 @@ import won.bot.framework.eventbot.listener.EventListener;
 import won.bot.jokebot.api.JokeBotsApi;
 import won.bot.jokebot.api.model.ChuckNorrisJoke;
 import won.bot.jokebot.context.JokeBotContextWrapper;
+import won.bot.jokebot.event.DeleteJokeAtomEvent;
 import won.protocol.message.WonMessage;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
@@ -39,25 +41,32 @@ public class Message2ChuckNorrisAction extends BaseEventBotAction {
         EventListenerContext ctx = getEventListenerContext();
         if (event instanceof MessageFromOtherAtomEvent
                         && ctx.getBotContextWrapper() instanceof JokeBotContextWrapper) {
-            // JokeBotContextWrapper botContextWrapper = (JokeBotContextWrapper)
-            // ctx.getBotContextWrapper();
             Connection con = ((MessageFromOtherAtomEvent) event).getCon();
-            // URI yourAtomUri = con.getAtomURI();
+            URI jokeAtomUri = con.getAtomURI();
             String message = "";
             try {
                 WonMessage msg = ((MessageEvent) event).getWonMessage();
                 message = extractTextMessageFromWonMessage(msg);
-            } catch (Error e) {
+            } catch (Exception te) {
+                logger.error(te.getMessage());
             }
-            String respondWith = "You want more? Just type \"more\"";
+            String responseMessge = "You want more? Just type \"more\"\n"
+                            + "To shred this joke: \"shred\"";
             if (message.equalsIgnoreCase("more")) {
-                // TODO: fetch new joke: and add here
                 ChuckNorrisJoke chuckNorrisJoke = jokeBotsApi.fetchJokeData();
                 String newJokeText = chuckNorrisJoke.getValue();
-                respondWith = "Okay, how about this one: \n" + newJokeText;
+                responseMessge = "Okay, how about this one: \n" + newJokeText;
+            } else if (message.equalsIgnoreCase("shred")) {
+                responseMessge = "Okay, as you wish. I will delete this joke now";
+                // Trigger Delete Event
+                try {
+                    getEventListenerContext().getEventBus().publish(new DeleteJokeAtomEvent(jokeAtomUri));
+                } catch (Exception te) {
+                    logger.error(te.getMessage());
+                }
             }
             try {
-                Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
+                Model messageModel = WonRdfUtils.MessageUtils.textMessage(responseMessge);
                 getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
             } catch (Exception te) {
                 logger.error(te.getMessage());

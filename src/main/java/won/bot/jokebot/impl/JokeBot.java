@@ -25,10 +25,12 @@ import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
 import won.bot.framework.eventbot.listener.impl.ActionOnFirstEventListener;
 import won.bot.jokebot.actions.Connect2ChuckAction;
 import won.bot.jokebot.actions.CreateAtomFromJokeAction;
+import won.bot.jokebot.actions.DeleteJokeAtomAction;
 import won.bot.jokebot.actions.Message2ChuckNorrisAction;
 import won.bot.jokebot.api.JokeBotsApi;
 import won.bot.jokebot.api.model.ChuckNorrisJoke;
 import won.bot.jokebot.event.CreateAtomFromJokeEvent;
+import won.bot.jokebot.event.DeleteJokeAtomEvent;
 import won.bot.jokebot.event.FetchJokeDataEvent;
 import won.bot.jokebot.event.StartJokeFetchEvent;
 
@@ -89,6 +91,7 @@ public class JokeBot extends EventBot {
             bus.subscribe(MessageFromOtherAtomEvent.class,
                             new ActionOnEventListener(ctx, "ReceivedTextMessage",
                                             new Message2ChuckNorrisAction(ctx, jokeBotsApi)));
+            bus.subscribe(DeleteJokeAtomEvent.class, new ActionOnEventListener(ctx, new DeleteJokeAtomAction(ctx)));
             bus.publish(new StartJokeFetchEvent());
             bus.publish(new FetchJokeDataEvent());
         } catch (Exception e) {

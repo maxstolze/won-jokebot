@@ -1,9 +1,9 @@
 package won.bot.jokebot.context;
 
+import java.net.URI;
+
 import won.bot.framework.bot.context.BotContext;
 import won.bot.framework.bot.context.BotContextWrapper;
-
-import java.net.URI;
 
 /**
  * Created by MS on 14.11.2019.
