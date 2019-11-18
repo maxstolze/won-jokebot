@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+#certs
+*.jks
+
 # Log file
 *.log
 
