@@ -24,7 +24,7 @@ import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 
 /**
- * Created by MS on 24.09.2018.
+ * Created by MS on 24.09.2019.
  */
 public class Message2ChuckNorrisAction extends BaseEventBotAction {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

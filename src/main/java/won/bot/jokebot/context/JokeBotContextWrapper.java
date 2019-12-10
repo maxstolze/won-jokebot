@@ -3,12 +3,13 @@ package won.bot.jokebot.context;
 import java.net.URI;
 
 import won.bot.framework.bot.context.BotContext;
-import won.bot.framework.bot.context.BotContextWrapper;
+import won.bot.framework.extensions.serviceatom.ServiceAtomContext;
+import won.bot.framework.extensions.serviceatom.ServiceAtomEnabledBotContextWrapper;
 
 /**
  * Created by MS on 14.11.2019.
  */
-public class JokeBotContextWrapper extends BotContextWrapper {
+public class JokeBotContextWrapper extends ServiceAtomEnabledBotContextWrapper implements ServiceAtomContext {
     private String uriJokeURLRelationsName;
     private String jokeUrlUriRelationsName;
 
