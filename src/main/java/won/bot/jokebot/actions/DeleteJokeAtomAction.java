@@ -62,7 +62,7 @@ public class DeleteJokeAtomAction extends AbstractDeleteAtomAction {
         };
         EventBotActionUtils.makeAndSubscribeResponseListener(deleteAtomMessage, successCallback, failureCallback, ctx);
         logger.debug("registered listeners for response to message URI {}", deleteAtomMessage.getMessageURI());
-        ctx.getWonMessageSender().sendWonMessage(deleteAtomMessage);
+        ctx.getWonMessageSender().prepareAndSendMessage(deleteAtomMessage);
         logger.debug("atom deletion message sent with message URI {}", deleteAtomMessage.getMessageURI());
     }
 }

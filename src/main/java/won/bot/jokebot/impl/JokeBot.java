@@ -59,7 +59,7 @@ public class JokeBot extends EventBot {
             bus = getEventBus();
             BotBehaviour executeWonMessageCommandBehaviour = new ExecuteWonMessageCommandBehaviour(ctx);
             executeWonMessageCommandBehaviour.activate();
-            bus.subscribe(CreateAtomFromJokeEvent.class, new ActionOnEventListener(ctx, "CreateAtomFromJobEvent",
+            bus.subscribe(CreateAtomFromJokeEvent.class, new ActionOnEventListener(ctx, "CreateAtomFromJokeEvent",
                             new CreateAtomFromJokeAction(ctx)));
             // Create the atoms
             BotTrigger createJokeBotTrigger = new BotTrigger(ctx, Duration.ofMinutes(publishTime));

@@ -72,8 +72,9 @@ public class CreateAtomFromJokeAction extends AbstractCreateAtomAction {
             Dataset dataset = this.generatejokeAtomStructure(atomURI, chuckNorrisJoke);
             logger.debug("creating atom on won node {} with content {} ", wonNodeUri,
                             StringUtils.abbreviate(RdfUtils.toString(dataset), 150));
-            WonMessage createAtomMessage = createWonMessage(wonNodeInformationService, atomURI, wonNodeUri, dataset,
-                            false, false);
+            WonMessage createAtomMessage = ctx.getWonMessageSender()
+                            .prepareMessage(createWonMessage(atomURI, wonNodeUri, dataset,
+                                            false, false));
             EventBotActionUtils.rememberInList(ctx, atomURI, uriListName);
             botContextWrapper.addURIJokeURLRelation(chuckNorrisJoke.getUrl(), atomURI);
             EventBus bus = ctx.getEventBus();
@@ -92,7 +93,7 @@ public class CreateAtomFromJokeAction extends AbstractCreateAtomAction {
             EventBotActionUtils.makeAndSubscribeResponseListener(createAtomMessage, successCallback, failureCallback,
                             ctx);
             logger.debug("registered listeners for response to message URI {}", createAtomMessage.getMessageURI());
-            ctx.getWonMessageSender().sendWonMessage(createAtomMessage);
+            ctx.getWonMessageSender().sendMessage(createAtomMessage);
             logger.debug("atom creation message sent with message URI {}", createAtomMessage.getMessageURI());
             return true;
         }

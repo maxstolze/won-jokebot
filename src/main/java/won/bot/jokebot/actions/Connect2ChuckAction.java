@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.Event;
+import won.bot.framework.eventbot.event.impl.command.connect.ConnectCommandEvent;
+import won.bot.framework.eventbot.event.impl.command.connect.ConnectCommandResultEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
-import won.bot.framework.eventbot.event.impl.command.open.OpenCommandEvent;
-import won.bot.framework.eventbot.event.impl.command.open.OpenCommandResultEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.ConnectFromOtherAtomEvent;
 import won.bot.framework.eventbot.filter.impl.CommandResultFilter;
 import won.bot.framework.eventbot.listener.EventListener;
@@ -41,14 +41,17 @@ public class Connect2ChuckAction extends BaseEventBotAction {
             Connection con = ((ConnectFromOtherAtomEvent) event).getCon();
             URI yourAtomUri = con.getAtomURI();
             try {
-                String message = "Not funny enough?\n Chuck Norris will find you!";
-                final OpenCommandEvent openCommandEvent = new OpenCommandEvent(con, message);
-                ctx.getEventBus().subscribe(OpenCommandResultEvent.class, new ActionOnFirstEventListener(ctx,
+                String welcomeMessage = "Not funny enough?\n Chuck Norris will find you!";
+                URI localSocket = con.getSocketURI();
+                URI targetSocket = con.getTargetSocketURI();
+                final ConnectCommandEvent openCommandEvent = new ConnectCommandEvent(localSocket, targetSocket,
+                                welcomeMessage);
+                ctx.getEventBus().subscribe(ConnectCommandResultEvent.class, new ActionOnFirstEventListener(ctx,
                                 new CommandResultFilter(openCommandEvent), new BaseEventBotAction(ctx) {
                                     @Override
                                     protected void doRun(Event event, EventListener executingListener)
                                                     throws Exception {
-                                        OpenCommandResultEvent connectionMessageCommandResultEvent = (OpenCommandResultEvent) event;
+                                        ConnectCommandResultEvent connectionMessageCommandResultEvent = (ConnectCommandResultEvent) event;
                                         if (connectionMessageCommandResultEvent.isSuccess()) {
                                             String jokeUrl = botContextWrapper.getJokeURLForURI(yourAtomUri);
                                             String respondWith = jokeUrl != null
