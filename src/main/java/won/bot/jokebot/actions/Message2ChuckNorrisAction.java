@@ -28,11 +28,11 @@ import won.protocol.util.WonRdfUtils;
  */
 public class Message2ChuckNorrisAction extends BaseEventBotAction {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private JokeBotsApi jokeBotsApi;
+    private String jsonURL;
 
-    public Message2ChuckNorrisAction(EventListenerContext ctx, JokeBotsApi jokeBotsApi) {
+    public Message2ChuckNorrisAction(EventListenerContext ctx, String jsonURL) {
         super(ctx);
-        this.jokeBotsApi = jokeBotsApi;
+        this.jsonURL = jsonURL;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Message2ChuckNorrisAction extends BaseEventBotAction {
             String responseMessge = "You want more? Just type \"more\"\n"
                             + "To shred this joke: \"shred\"";
             if (message.equalsIgnoreCase("more")) {
-                ChuckNorrisJoke chuckNorrisJoke = jokeBotsApi.fetchJokeData();
+                ChuckNorrisJoke chuckNorrisJoke = JokeBotsApi.fetchJokeData(this.jsonURL);
                 String newJokeText = chuckNorrisJoke.getValue();
                 responseMessge = "Okay, how about this one: \n" + newJokeText;
             } else if (message.equalsIgnoreCase("shred")) {

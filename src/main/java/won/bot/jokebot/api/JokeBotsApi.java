@@ -20,13 +20,7 @@ import won.bot.jokebot.api.model.ChuckNorrisJoke;
  * @author ms Handles all needed webrequests
  */
 public class JokeBotsApi {
-    private String jsonURL;
-
-    public JokeBotsApi(String jsonURL) {
-        this.jsonURL = jsonURL;
-    }
-
-    public ChuckNorrisJoke fetchJokeData() {
+    public static ChuckNorrisJoke fetchJokeData(String jsonURL) {
         ChuckNorrisJoke joke = null;
         CloseableHttpResponse response = null;
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

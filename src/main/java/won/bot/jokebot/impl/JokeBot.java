@@ -12,7 +12,6 @@ import won.bot.framework.eventbot.behaviour.ExecuteWonMessageCommandBehaviour;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.impl.wonmessage.ConnectFromOtherAtomEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherAtomEvent;
-import won.bot.framework.eventbot.filter.impl.AtomUriInNamedListFilter;
 import won.bot.framework.eventbot.filter.impl.NotFilter;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
 import won.bot.framework.extensions.serviceatom.ServiceAtomBehaviour;
@@ -20,7 +19,6 @@ import won.bot.framework.extensions.serviceatom.ServiceAtomExtension;
 import won.bot.jokebot.actions.Connect2ChuckAction;
 import won.bot.jokebot.actions.DeleteJokeAtomAction;
 import won.bot.jokebot.actions.Message2ChuckNorrisAction;
-import won.bot.jokebot.api.JokeBotsApi;
 import won.bot.jokebot.event.DeleteJokeAtomEvent;
 
 /**
@@ -41,7 +39,6 @@ public class JokeBot extends EventBot implements ServiceAtomExtension {
     protected void initializeEventListeners() {
         EventListenerContext ctx = getEventListenerContext();
         bus = getEventBus();
-        JokeBotsApi jokeBotsApi = new JokeBotsApi(this.jsonURL);
         logger.info("Register JokeBot with update time {}", updateTime);
         try {
             bus = getEventBus();
@@ -49,14 +46,12 @@ public class JokeBot extends EventBot implements ServiceAtomExtension {
             executeWonMessageCommandBehaviour.activate();
             serviceAtomBehaviour = new ServiceAtomBehaviour(ctx);
             serviceAtomBehaviour.activate();
-            NotFilter noOwnAtoms = new NotFilter(
-                            new AtomUriInNamedListFilter(ctx, ctx.getBotContextWrapper().getAtomCreateListName()));
             // filter to prevent reacting to serviceAtom<->ownedAtom events;
             NotFilter noInternalServiceAtomEventFilter = getNoInternalServiceAtomEventFilter();
             bus.subscribe(ConnectFromOtherAtomEvent.class, noInternalServiceAtomEventFilter,
-                            new Connect2ChuckAction(ctx));
+                            new Connect2ChuckAction(ctx, this.jsonURL));
             bus.subscribe(MessageFromOtherAtomEvent.class,
-                            new Message2ChuckNorrisAction(ctx, jokeBotsApi));
+                            new Message2ChuckNorrisAction(ctx, this.jsonURL));
             bus.subscribe(DeleteJokeAtomEvent.class, new ActionOnEventListener(ctx, new DeleteJokeAtomAction(ctx)));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
